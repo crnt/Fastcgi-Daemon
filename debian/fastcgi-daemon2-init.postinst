@@ -1,0 +1,19 @@
+#!/bin/sh
+
+AVAILABLE_DIR=/etc/fastcgi2/available
+LOG_DIR=/var/log/fastcgi2
+RUN_DIR=/var/run/fastcgi2
+POSTSTART_DIR=/etc/fastcgi2/poststart
+POSTSTOP_DIR=/etc/fastcgi2/poststop
+CHECK_DIR=/etc/fastcgi2/check
+
+USER=www-data
+
+mkdir -p $AVAILABLE_DIR $LOG_DIR $RUN_DIR $POSTSTART_DIR $POSTSTOP_DIR $CHECK_DIR
+
+chown $USER $LOG_DIR $RUN_DIR 
+chgrp $USER $LOG_DIR $RUN_DIR
+
+/usr/sbin/update-rc.d fastcgi-daemon2 start 19 2 . stop 21 0 1 6 .
+
+true

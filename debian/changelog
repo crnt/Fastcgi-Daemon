@@ -1,0 +1,173 @@
+fastcgi-daemon2 (2.8-5) unstable; urgency=low
+
+  * error log customization added
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Mon, 14 Mar 2011 15:36:09 +0300
+
+fastcgi-daemon2 (2.8-4) unstable; urgency=low
+
+  * init script fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 01 Mar 2011 15:36:07 +0300
+
+fastcgi-daemon2 (2.8-3) unstable; urgency=low
+
+  * init script fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 01 Mar 2011 14:23:54 +0300
+
+fastcgi-daemon2 (2.8-2) unstable; urgency=low
+
+  * fastcgistart fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Mon, 21 Feb 2011 11:13:26 +0300
+
+fastcgi-daemon2 (2.8-1) unstable; urgency=low
+
+  * loading for environment variables added 
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Mon, 21 Feb 2011 10:23:45 +0300
+
+fastcgi-daemon2 (2.7-6) unstable; urgency=low
+
+  * PUT support added
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Mon, 14 Feb 2011 12:02:47 +0300
+
+fastcgi-daemon2 (2.7-5) unstable; urgency=low
+
+  * file logger fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Fri, 11 Feb 2011 15:46:06 +0300
+
+fastcgi-daemon2 (2.7-4) unstable; urgency=low
+
+  * file logger max message length removed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Fri, 11 Feb 2011 15:21:05 +0300
+
+fastcgi-daemon2 (2.7-3) unstable; urgency=low
+
+  * file logger format fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Mon, 17 Jan 2011 13:26:00 +0300
+
+fastcgi-daemon2 (2.7-2) unstable; urgency=low
+
+  * fixed start script
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Wed, 29 Dec 2010 12:28:57 +0300
+
+fastcgi-daemon2 (2.7-1) unstable; urgency=low
+
+  * start script added to fastcgistart
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 28 Dec 2010 12:32:02 +0300
+
+fastcgi-daemon2 (2.6-1) unstable; urgency=low
+
+  * file logger module added
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Thu, 09 Dec 2010 20:25:46 +0300
+
+fastcgi-daemon2 (2.5-11) unstable; urgency=low
+
+  * all option fixed in init script
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 30 Nov 2010 10:17:27 +0300
+
+fastcgi-daemon2 (2.5-10) unstable; urgency=low
+
+  * merge post and query parameters
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Fri, 26 Nov 2010 12:55:55 +0300
+
+fastcgi-daemon2 (2.5-9) unstable; urgency=low
+
+  * add env logging
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Fri, 26 Nov 2010 11:50:59 +0300
+
+fastcgi-daemon2 (2.5-8) unstable; urgency=low
+
+  * delay opt added to init script
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Thu, 18 Nov 2010 12:48:12 +0300
+
+fastcgi-daemon2 (2.5-7) unstable; urgency=low
+
+  * statistics module updated
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Wed, 17 Nov 2010 10:52:50 +0300
+
+fastcgi-daemon2 (2.5-6) unstable; urgency=low
+
+  * useless log removed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Thu, 11 Nov 2010 18:02:00 +0300
+
+fastcgi-daemon2 (2.5-5) unstable; urgency=low
+
+  * log removed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 09 Nov 2010 13:23:27 +0300
+
+fastcgi-daemon2 (2.5-4) unstable; urgency=low
+
+  * cookie serialization fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Thu, 28 Oct 2010 15:47:32 +0400
+
+fastcgi-daemon2 (2.5-3) unstable; urgency=low
+
+  * depends fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Thu, 28 Oct 2010 14:53:10 +0400
+
+fastcgi-daemon2 (2.5-2) unstable; urgency=low
+
+  * cookie serialization fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Thu, 28 Oct 2010 14:45:22 +0400
+
+fastcgi-daemon2 (2.5-1) unstable; urgency=low
+
+  * httpOnly attribute added to Cookie
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Wed, 13 Oct 2010 18:15:22 +0400
+
+fastcgi-daemon2 (2.4-1) unstable; urgency=low
+
+  * permanent method added to Cookie
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Wed, 13 Oct 2010 11:22:52 +0400
+
+fastcgi-daemon2 (2.3-1) unstable; urgency=low
+
+  * request_io_stream.h added to dev package for testing purposes
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Mon, 27 Sep 2010 15:03:25 +0400
+
+fastcgi-daemon2 (2.2-1) unstable; urgency=low
+
+  * statistics initialization fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Fri, 27 Aug 2010 19:00:38 +0400
+
+fastcgi-daemon2 (2.1-2) unstable; urgency=low
+
+  * shutdown fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Wed, 25 Aug 2010 16:48:25 +0400
+
+fastcgi-daemon2 (2.1-1) unstable; urgency=low
+
+  * Statistics module fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Wed, 25 Aug 2010 16:19:28 +0400
+
+fastcgi-daemon2 (2.0-1) unstable; urgency=low
+
+  * Initial release
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Fri, 20 Aug 2010 12:20:22 +0400

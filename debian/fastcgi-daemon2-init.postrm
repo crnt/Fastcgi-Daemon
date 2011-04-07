@@ -1,0 +1,15 @@
+#!/bin/sh
+
+AVAILABLE_DIR=/etc/fastcgi2/available
+LOG_DIR=/var/log/fastcgi2
+RUN_DIR=/var/run/fastcgi2
+POSTSTART_DIR=/etc/fastcgi2/poststart
+POSTSTOP_DIR=/etc/fastcgi2/poststop
+CHECK_DIR=/etc/fastcgi2/check
+
+rmdir $AVAILABLE_DIR $LOG_DIR $RUN_DIR $POSTSTART_DIR $POSTSTOP_DIR $CHECK_DIR  >/dev/null 2>&1
+
+/usr/sbin/update-rc.d -f fastcgi-daemon2 remove
+
+exit 0
+

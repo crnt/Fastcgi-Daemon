@@ -1,0 +1,78 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE=1
+
+CXX = g++
+ACLOCAL = aclocal-1.9
+AUTOMAKE = automake-1.9
+ACLOCAL_OPTIONS = "-I /usr/share/autoconf-archive/ -I ./config/"
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CXXFLAGS += -g -O0 -fPIC
+else
+	CXXFLAGS += -g -O2 -fPIC -finline
+endif
+
+autogen: autogen-stamp
+
+autogen-stamp: configure.in
+	dh_testdir
+	ACLOCAL_OPTIONS=$(ACLOCAL_OPTIONS) AUTOMAKE=$(AUTOMAKE) ACLOCAL=$(ACLOCAL) ./autogen.sh
+	touch autogen-stamp
+	
+configure: configure-stamp
+
+configure-stamp:
+	dh_testdir
+	CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure --enable-maintainer-mode \
+		--prefix=/usr --sysconfdir=/etc/fastcgi2 --localstatedir=/var/log/fastcgi2 \
+		--enable-cppunit
+	touch configure-stamp
+
+build: build-stamp
+
+build-stamp: autogen-stamp configure-stamp 
+	dh_testdir
+	$(MAKE) release=1
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f *-stamp
+	-$(MAKE) distclean
+	dh_clean 
+
+tests: build
+	dh_testdir
+	$(MAKE) check
+
+install: build tests
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	install -d $(CURDIR)/debian/tmp/usr/bin 
+	install -m 755 $(CURDIR)/extra/fastcgistart2.sh $(CURDIR)/debian/tmp/usr/bin 
+	install -d $(CURDIR)/debian/tmp/etc/init.d
+	install -m 755 $(CURDIR)/extra/fastcgi-daemon2 $(CURDIR)/debian/tmp/etc/init.d
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_movefiles
+	dh_installchangelogs 
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs -v
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-arch
+
+.PHONY: build clean binary-arch binary install configure

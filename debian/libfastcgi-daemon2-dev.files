@@ -1,0 +1,3 @@
+usr/include/fastcgi2/*
+usr/lib/libfastcgi-daemon2.a
+usr/lib/libfastcgi-daemon2.la

@@ -1,0 +1,21 @@
+--AaB03x
+content-disposition: form-data; name="field1"
+
+Joe Blow
+--AaB03x
+content-disposition: form-data; name="pics"
+Content-type: multipart/mixed, boundary=BbC04y
+
+--BbC04y
+Content-disposition: attachment; name="file1"; filename="file1.txt"
+Content-Type: text/plain
+
+... contents of file1.txt ...
+--BbC04y
+Content-disposition: attachment; name="file2"; filename="file2.gif"
+Content-type: image/gif
+Content-Transfer-Encoding: binary
+
+...contents of file2.gif...
+--BbC04y--
+--AaB03x--

@@ -1,0 +1,174 @@
+#ifndef _FASTCGI_DETAILS_THREAD_POOL_H_
+#define _FASTCGI_DETAILS_THREAD_POOL_H_
+
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/condition.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <queue>
+
+namespace fastcgi {
+
+struct ThreadPoolInfo
+{
+	bool started;
+	uint64_t threadsNumber;
+	uint64_t queueLength;
+	uint64_t busyThreadsCounter;
+	uint64_t currentQueue;
+	uint64_t goodTasksCounter;
+	uint64_t badTasksCounter;
+};
+
+template<typename T>
+class ThreadPool : private boost::noncopyable {
+public:
+	typedef T TaskType;
+	typedef boost::function<void ()> InitFuncType;
+
+public:
+	ThreadPool(const unsigned threadsNumber, const unsigned queueLength)
+	{
+		info_.started = false;
+		info_.threadsNumber = threadsNumber;
+		info_.queueLength = queueLength;
+		info_.busyThreadsCounter = 0;
+		info_.currentQueue = 0;
+		info_.goodTasksCounter = 0;
+		info_.badTasksCounter = 0;
+	}
+
+	virtual ~ThreadPool() {
+	}
+
+	void start(InitFuncType func) {
+		boost::mutex::scoped_lock lock(mutex_);
+		if (info_.started) {
+			return;
+		}
+//		if (threads_.size() != 0) {
+//			throw std::runtime_error("Invalid thread pool state.");
+//		}
+
+		boost::function<void()> f = boost::bind(&ThreadPool<T>::workMethod, this, func);
+		for (unsigned i = 0; i < info_.threadsNumber; ++i) {
+			threads_.create_thread(f);
+		}
+
+		info_.started = true;
+	}
+
+	void stop() {
+		{
+			boost::mutex::scoped_lock lock(mutex_);
+			info_.started = false;
+			condition_.notify_all();
+		}
+	}
+
+	void join() {
+		threads_.join_all();
+	}
+
+	void addTask(T task) {
+		try {
+			boost::mutex::scoped_lock lock(mutex_);
+
+			if (!info_.started) {
+				throw std::runtime_error("Thread pool is not started yet");
+			}
+
+			if (tasksQueue_.size() >= info_.queueLength) {
+				throw std::runtime_error("Pool::handle: the queue has already reached its maximum size of "
+						+ boost::lexical_cast<std::string>(info_.queueLength) + " elements");
+			}
+			tasksQueue_.push(task);
+		} catch (...) {
+			condition_.notify_one();
+			throw;
+		}
+		condition_.notify_one();
+	}
+
+	ThreadPoolInfo getInfo() const {
+		boost::mutex::scoped_lock lock(mutex_);
+		info_.currentQueue = tasksQueue_.size();
+		return info_;
+	}
+
+protected:
+	virtual void handleTask(T) = 0;
+
+private:
+	void workMethod(InitFuncType func) {
+		const int none = 0;
+		const int good = 1;
+		const int bad = 2;
+		int state = none;
+
+		try {
+			func();
+		}
+		catch (...) {
+		}
+
+		while (true) {
+			try
+			{
+				T task;
+				{
+					boost::mutex::scoped_lock lock(mutex_);
+					switch (state) {
+					case none:
+						break;
+					case good:
+						++info_.goodTasksCounter;
+						--info_.busyThreadsCounter;
+						break;
+					case bad:
+						++info_.badTasksCounter;
+						--info_.busyThreadsCounter;
+						break;
+					}
+					state = none;
+					while (true) {
+						if (!info_.started) {
+							return;
+						} else if (!tasksQueue_.empty()) {
+							break;
+						}
+						condition_.wait(lock);
+					}
+					task = tasksQueue_.front();
+					tasksQueue_.pop();
+					++info_.busyThreadsCounter;
+				}
+
+				try {
+					handleTask(task);
+					state = good;
+				} catch (...) {
+					state = bad;
+				}
+			}
+			catch (...)
+			{
+			}
+		}
+	}
+
+private:
+	mutable boost::mutex mutex_;
+	boost::condition condition_;
+	boost::thread_group threads_;
+	std::queue<T> tasksQueue_;
+	mutable ThreadPoolInfo info_;
+};
+
+} // namespace fastcgi
+
+#endif // _FASTCGI_DETAILS_THREAD_POOL_H_
