@@ -11,7 +11,8 @@ Build-Depends: debhelper (>= 4.0.0),
  libboost-regex-dev,
  libtool,
  pkg-config,
- libssl-dev
+ libssl-dev,
+ autoconf-archive
 Standards-Version: 3.6.1
 Section: libs
 

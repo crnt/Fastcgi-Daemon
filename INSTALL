@@ -70,6 +70,8 @@ The simplest way to compile this package is:
   6. Often, you can also type `make uninstall' to remove the installed
      files again.
 
+  7. Autoconf archive package should be isntalled.
+
 Compilers and Options
 =====================
 

@@ -63,7 +63,16 @@ fi
 
 AX_BOOST_BASE([1.30])
 AX_BOOST_THREAD
+if test "f$BOOST_THREAD_LDFLAGS" == "f"
+then
+    AC_MSG_ERROR([boost thread lib not found, unable to compile])
+fi
+
 AX_BOOST_REGEX
+if test "f$BOOST_REGEX_LDFLAGS" == "f"
+then
+    AC_MSG_ERROR([boost regex lib not found, unable to compile])
+fi
 
 for i in -W -Wall -Wextra -fexceptions -frtti -ftemplate-depth-128; do
 	AX_CHECK_COMPILER_FLAGS([$i], [CXXFLAGS="$CXXFLAGS $i"], [])
