@@ -33,13 +33,14 @@ class Config;
 class ComponentSet;
 class Handler;
 class Request;
+class RequestFilter;
 
 class HandlerSet : private boost::noncopyable
 {
 public:
 	struct HandlerDescription {
-		typedef std::map<std::string, boost::regex>  FilterMap;
-		FilterMap filters;
+		typedef std::vector<std::pair<std::string, boost::shared_ptr<RequestFilter> > > FilterArray;
+		FilterArray filters;
 		std::vector<Handler*> handlers;
 		std::string poolName;
 		std::string id;
