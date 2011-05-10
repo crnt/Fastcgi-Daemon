@@ -7,7 +7,7 @@
 Summary:	fastcgi-daemon2 is an application server for FastCGI
 Name:		fastcgi-daemon2
 Version:	2.9
-Release:	1%{?dist}
+Release:	2%{?dist}
 
 License:	Yandex License
 Group:		System Environment/Libraries

@@ -37,8 +37,8 @@ main(int argc, char *argv[]) {
 	
 	using namespace fastcgi;
 	try {
-		std::auto_ptr<Config> config = Config::create(argc, argv);
-		boost::shared_ptr<Globals> globals(new Globals(config.get()));
+	    std::auto_ptr<Config> config = Config::create(argc, argv);
+	    boost::shared_ptr<Globals> globals(new Globals(config.get()));
 		FCGIServer server(globals);
 		::server = &server;
 		setUpSignalHandlers();
