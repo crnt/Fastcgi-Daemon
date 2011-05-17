@@ -1,3 +1,9 @@
+fastcgi-daemon2 (2.9-3) unstable; urgency=low
+
+  * fix possible crash in FastcgiRequest destructor
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 17 May 2011 18:55:31 +0400
+
 fastcgi-daemon2 (2.9-2) unstable; urgency=low
 
   * exception handling added to component creation and destruction
