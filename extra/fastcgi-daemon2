@@ -13,9 +13,9 @@ POSTSTART_DIR="/etc/fastcgi2/poststart"
 POSTSTOP_DIR="/etc/fastcgi2/poststop"
 
 if ! [ -d $PID_DIR ] ; then
-	mkdir -p $PID_DIR
-	chown ${FASTCGI_USER}.${FASTCGI_USER} $PID_DIR
-	chmod 775 $PID_DIR
+    mkdir -p $PID_DIR
+    chown ${FASTCGI_USER}.${FASTCGI_USER} $PID_DIR
+    chmod 775 $PID_DIR
 fi
 
 FASTCGI_LIST=`ls $CONFIG_DIR | awk -F. /.*\.conf$/'{print $1}'`
@@ -27,21 +27,101 @@ COMMAND=$1
 shift 1
 for i in $*
 do
-	case $i in
-    	--delay=*)
-		DELAY=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
-		;;
-    	*)
-    	    if [ "$MODULE_LIST" ]
-    	    then
-    	        MODULE_LIST=$MODULE_LIST" $i"
-    	    else
-    	        MODULE_LIST="$i"
-    	    fi
-		;;
-  	esac
+    case $i in
+        --delay=*)
+            DELAY=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+        ;;
+        *)
+            if [ "$MODULE_LIST" ]; then
+                MODULE_LIST=$MODULE_LIST" $i"
+            else
+                MODULE_LIST="$i"
+            fi
+        ;;
+    esac
 done
 
+module_list() {
+    if [ "$MODULE_LIST" ]; then
+        case "$MODULE_LIST" in
+            [aA][lL][lL])
+            ;;
+            *)
+                FASTCGI_LIST="$MODULE_LIST"
+            ;;
+        esac
+    else
+        if [ "$1" != "status" ]; then
+            echo "Usage: $0 $1 <applications list>|all"
+            exit 1
+        fi
+    fi
+}
+
+start() {
+    echo "Starting FastCgi Application: "
+    for FASTCGI in $FASTCGI_LIST; do
+        echo "Name: $FASTCGI"
+        if start-stop-daemon --quiet --stop --signal 0 --pidfile $PID_DIR/fastcgistart2.$FASTCGI.pid 2>/dev/null 1>/dev/null; then
+            echo "$FASTCGI is already running."
+            EXIT_STATUS=1
+        else
+        if [ -r /etc/fastcgi2/available/$FASTCGI.start ]; then
+            . /etc/fastcgi2/available/$FASTCGI.start
+        fi
+        su $FASTCGI_USER -c "/sbin/start-stop-daemon --start --background --verbose --name $NAME --exec /usr/bin/fastcgistart2.sh $FASTCGI"
+        if [ $? != 0 ]; then
+            echo "Error: Cannot start /usr/bin/fastcgistart2.sh"
+            EXIT_STATUS=1
+        fi
+
+        if [ "x$1" = "x" ]; then
+            #Poststart script inittialize
+            if [ -x $POSTSTART_DIR/$FASTCGI.sh ]; then
+                echo "Poststart file for $FASTCGI executing"
+                $POSTSTART_DIR/$FASTCGI.sh
+            else
+                echo "Warning: poststart script for $FASTCGI not found"
+            fi
+        fi
+        echo "."
+        fi
+    done
+    return 0
+}
+
+stop() {
+    echo "Stopping FastCgi Application: "
+    for FASTCGI in $FASTCGI_LIST; do
+        if ! [ -s $PID_DIR/$FASTCGI.pid ]; then
+            echo Warning: there is $FASTCGI.conf, but there is no $PID_DIR/$FASTCGI.pid
+            continue
+        fi
+        echo "Name: $FASTCGI"
+        #Kill fastcgistart
+        start-stop-daemon --quiet --stop --signal 0 --pidfile $PID_DIR/fastcgistart2.$FASTCGI.pid 2>&1 >/dev/null
+        start-stop-daemon --quiet --signal 15 --stop --pidfile $PID_DIR/fastcgistart2.$FASTCGI.pid 2>&1 >/dev/null
+        start-stop-daemon --quiet --signal 9 --stop --pidfile $PID_DIR/fastcgistart2.$FASTCGI.pid 2>&1 >/dev/null
+        #Kill daemon
+        start-stop-daemon --quiet --stop --signal 0 --pidfile $PID_DIR/$FASTCGI.pid 2>&1 >/dev/null
+        start-stop-daemon --quiet --signal 15 --stop --pidfile $PID_DIR/$FASTCGI.pid 2>&1 >/dev/null
+        sleep $DELAY
+        start-stop-daemon --quiet --signal 9 --stop --pidfile $PID_DIR/$FASTCGI.pid 2>&1 >/dev/null
+        echo "Stopping $FASTCGI done"
+        if [ "x$1" = "x" ]; then
+            if [ -x $POSTSTOP_DIR/$FASTCGI.sh ]; then
+                echo "Poststop file for $FASTCGI executing"
+                $POSTSTOP_DIR/$FASTCGI.sh
+            else
+                echo "Warning: poststop script for $FASTCGI not found"
+            fi
+        fi
+        #Rm pid files
+        rm /var/run/fastcgi2/$FASTCGI.pid  >/dev/null
+    done
+    echo ""
+    return 0
+}
 
 status_short(){
 	#Check fastcgidaemon status
@@ -63,7 +143,7 @@ status_short(){
 	        if [ "$pid" != "" ] ; then
 	            echo "$1 dead but pid file exists"
 	            return 1
-		fi
+		    fi
 	    fi
 	else
 	    echo "$CHECK_DIR/$1.sh not found or not executable. ps aufx check only"
@@ -79,133 +159,51 @@ status_short(){
 	        if [ "$pid" != "" ] ; then
 	            echo "$1 dead but pid file exists"
 	            return 1
-		fi
+		    fi
 	    fi
 	fi	    
 	
 	echo "$1 is stopped"
 	return 3
 }
-RETVAL=0
 
+EXIT_STATUS=0
 
 case "$COMMAND" in
-  start)
-	if [ "$MODULE_LIST" ]
-	then
-		case "$MODULE_LIST" in
-			[aA][lL][lL])	;;
-			*)				FASTCGI_LIST="$MODULE_LIST" ;;
-		esac
-	fi
-
-        echo "Starting FastCgi Application: "
-        for FASTCGI in $FASTCGI_LIST 
-	    do 
-	    echo "Name: $FASTCGI"
-	    
-	    if start-stop-daemon --quiet --stop --signal 0 --pidfile $PID_DIR/fastcgistart2.$FASTCGI.pid 2>/dev/null 1>/dev/null
-	    then
-            echo "$FASTCGI is already running."
-	        exit 1
-    	    fi
-    	
-    	    `if [ -r /etc/fastcgi2/available/$FASTCGI.start ]; then
-	        . /etc/fastcgi2/available/$FASTCGI.start
-	    fi
-    	
-		su $FASTCGI_USER -c "/sbin/start-stop-daemon --start --background --verbose --name $NAME --exec /usr/bin/fastcgistart2.sh $FASTCGI"`
-		if [ $? != 0 ]
-		then
-			echo "Error: Cannot start /usr/bin/fastcgistart2.sh"
-			exit 1
-		fi
-		#Poststart script inittialize
-		if [ -x $POSTSTART_DIR/$FASTCGI.sh ]; then
-        	echo "Poststart file for $FASTCGI executing"
-			$POSTSTART_DIR/$FASTCGI.sh
-		else
-			echo "Warning: poststart script for $FASTCGI not found"
-		fi
-        echo "."
-        done
-        ;;
+    start)
+        module_list $COMMAND
+        start
+        exit $EXIT_STATUS
+    ;;
     stop)
-        echo "Stopping FastCgi Application: "
-	
-	if [ "$MODULE_LIST" ]
-	then
-		case "$MODULE_LIST" in
-			[aA][lL][lL])	;;
-			*)				FASTCGI_LIST="$MODULE_LIST" ;;
-		esac
-	else
-		echo "Usage: $0 stop <applications list>|all"
-		exit 1
-	fi
-        for FASTCGI in $FASTCGI_LIST
-		do 
-			if ! [ -s $PID_DIR/$FASTCGI.pid ]
-			then
-				echo Warning: there is $FASTCGI.conf, but there is no $PID_DIR/$FASTCGI.pid
-				continue
-			fi
-            echo "Name: $FASTCGI"
-
-	    #Kill fastcgistart
-            start-stop-daemon --quiet --stop --signal 0 --pidfile $PID_DIR/fastcgistart2.$FASTCGI.pid 2>&1 >/dev/null
-	    start-stop-daemon --quiet --signal 15 --stop --pidfile $PID_DIR/fastcgistart2.$FASTCGI.pid 2>&1 >/dev/null
-	    start-stop-daemon --quiet --signal 9 --stop --pidfile $PID_DIR/fastcgistart2.$FASTCGI.pid 2>&1 >/dev/null
-	    #Kill daemon
-            start-stop-daemon --quiet --stop --signal 0 --pidfile $PID_DIR/$FASTCGI.pid 2>&1 >/dev/null
-	    start-stop-daemon --quiet --signal 15 --stop --pidfile $PID_DIR/$FASTCGI.pid 2>&1 >/dev/null
-	    sleep $DELAY
-	    start-stop-daemon --quiet --signal 9 --stop --pidfile $PID_DIR/$FASTCGI.pid 2>&1 >/dev/null
-            echo "Stopping $FASTCGI done"
-	    if [ -x $POSTSTOP_DIR/$FASTCGI.sh ]; then
-        	echo "Poststop file for $FASTCGI executing"
-		$POSTSTOP_DIR/$FASTCGI.sh
-	    else
-		echo "Warning: poststop script for $FASTCGI not found"
-	    fi
-	    #Rm pid files
-	    rm /var/run/fastcgi2/$FASTCGI.pid  >/dev/null
-        done
-        RETVAL=1
-        echo ""
-        ;;
+        module_list $COMMAND
+        stop
+    ;;
 
     restart)
-	if [ "$MODULE_LIST" ]
-	then
-		case "$MODULE_LIST" in
-			[aA][lL][lL])	;;
-			*)				FASTCGI_LIST="$MODULE_LIST" ;;
-		esac
-	else
-		echo "Usage: $0 restart <servants list>|all"
-		exit 1
-	fi
-
-	$0 stop $@
-	$0 start $@
-	RETVAL=$?
+        module_list $COMMAND
+	    stop
+	    start
+        exit $EXIT_STATUS
 	;;
-
+    fast-restart)
+        module_list $COMMAND
+        stop  fast
+	    start fast
+        exit $EXIT_STATUS
+    ;;
     status)
-	shift 1
-	if [ "x$MODULE_LIST" != "x" ]; then FASTCGI_LIST="$MODULE_LIST"; fi
-
-        for FASTCGI in $FASTCGI_LIST; do 
+        module_list $COMMAND
+        for FASTCGI in $FASTCGI_LIST; do
             status_short "$FASTCGI"
         done
-        ;;
+    ;;
 
-  *)
+    *)
         N=/etc/init.d/$NAME
-        echo "Usage: $N {start|stop|restart|status}" >&2
+        echo "Usage: $N {start|stop|restart|fast-restart|status}" >&2
         exit 1
-        ;;
+    ;;
 esac
 
 exit 0

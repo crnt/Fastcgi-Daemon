@@ -45,7 +45,7 @@ if [ -e $FASTCGI_CONFIG  ]; then
     echo $$ > $LOCKER
 
     while [ -f $LOCKER ]; do
-	echo " /usr/sbin/fastcgi-daemon2 --config=$FASTCGI_CONFIG"
+	    echo " /usr/sbin/fastcgi-daemon2 --config=$FASTCGI_CONFIG"
         nice -n $FASTCGI_NICE /usr/sbin/fastcgi-daemon2 --config=$FASTCGI_CONFIG >> $LOGDIR/err.$1.log 2>&1
         echo "on `date` ::$THIS:: $THIS on `hostname` restarted"  >>$LOGDIR/err.$1.log
         sleep $RDELAY
