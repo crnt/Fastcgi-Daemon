@@ -1,3 +1,10 @@
+fastcgi-daemon2 (2.9-4) unstable; urgency=low
+
+  * error reporting updated
+  * init script refactored
+
+ -- Ilya Golubtsov <golubtsov@yandex-team.ru>  Thu, 23 Jun 2011 13:58:59 +0400
+
 fastcgi-daemon2 (2.9-3) unstable; urgency=low
 
   * fix possible crash in FastcgiRequest destructor

@@ -96,9 +96,10 @@ FastcgiRequest::write(const char *buf, int size) {
             std::stringstream str;
             str << "Cannot write data to fastcgi socket: " <<
                 strerror_r(error, buffer, sizeof(buffer));
+            str << ". Url: " << request_->getUrl();
             throw std::runtime_error(str.str());
         }
-        throw std::runtime_error("FastCGI error");
+        throw std::runtime_error("FastCGI error. Url: " + request_->getUrl());
     }
     return num;
 }
