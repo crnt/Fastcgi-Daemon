@@ -86,20 +86,55 @@ FastcgiRequest::read(char *buf, int size) {
     return FCGX_GetStr(buf, size, fcgiRequest_.in);
 }
 
+static void
+generateRequestInfo(const Request *request, std::stringstream &str) {
+    str << "Url: " << request->getUrl();
+    if ("POST" != request->getRequestMethod() && "PUT" != request->getRequestMethod()) {
+        return;
+    }
+    std::string result;
+    result.reserve(2048);
+    std::vector<std::string> names;
+    request->argNames(names);
+    for (std::vector<std::string>::iterator it = names.begin();
+         it != names.end();
+         ++it) {
+        std::vector<std::string> args;
+        request->getArg(*it, args);
+        for (std::vector<std::string>::iterator it2 = args.begin();
+             it2 != args.end();
+             ++it2) {
+            if (!result.empty()) {
+                result.push_back('&');
+            }
+            result.append(*it);
+            result.push_back('=');
+            if (result.size() + it2->size() > 1024) {
+                str << ". Args: " << result << "...";
+                return;
+            }
+            result.append(*it2);
+        }
+    }
+    str << ". Args: " << result;
+}
+
 int
 FastcgiRequest::write(const char *buf, int size) {
     int num = FCGX_PutStr(buf, size, fcgiRequest_.out);
     if (-1 == num) {
+        std::stringstream str;
         int error = FCGX_GetError(fcgiRequest_.out);
         if (error > 0) {
             char buffer[256];
-            std::stringstream str;
             str << "Cannot write data to fastcgi socket: " <<
-                strerror_r(error, buffer, sizeof(buffer));
-            str << ". Url: " << request_->getUrl();
-            throw std::runtime_error(str.str());
+                strerror_r(error, buffer, sizeof(buffer)) << ". ";
         }
-        throw std::runtime_error("FastCGI error. Url: " + request_->getUrl());
+        else {
+            str << "FastCGI error. ";
+        }
+        generateRequestInfo(request_.get(), str);
+        throw std::runtime_error(str.str());
     }
     return num;
 }
