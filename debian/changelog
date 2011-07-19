@@ -1,8 +1,14 @@
+fastcgi-daemon2 (2.10-1) unstable; urgency=low
+
+  * minor version up
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 19 Jul 2011 16:14:08 +0400
+
 fastcgi-daemon2 (2.9-5) unstable; urgency=low
 
   * error reporting updated
 
- -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Wed, 06 Jul 2011 12:58:33 +0400
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 19 Jul 2011 16:14:06 +0400
 
 fastcgi-daemon2 (2.9-4) unstable; urgency=low
 
