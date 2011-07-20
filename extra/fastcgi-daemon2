@@ -51,7 +51,7 @@ module_list() {
             ;;
         esac
     else
-        if [ "$1" != "status" ]; then
+        if [ "$1" != "status" ] && [ "$1" != "start" ]; then
             echo "Usage: $0 $1 <applications list>|all"
             exit 1
         fi
