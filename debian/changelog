@@ -1,3 +1,9 @@
+fastcgi-daemon2 (2.10-2) unstable; urgency=low
+
+  * Change parameter 'start all' to 'start' for init runing (rc*.d)
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Thu, 21 Jul 2011 10:06:17 +0400
+
 fastcgi-daemon2 (2.10-1) unstable; urgency=low
 
   * minor version up
