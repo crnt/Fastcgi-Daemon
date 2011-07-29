@@ -1,3 +1,9 @@
+fastcgi-daemon2 (2.10-3) unstable; urgency=low
+
+  * RequestStream destructor fixed for empty stream
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Fri, 29 Jul 2011 14:42:16 +0400
+
 fastcgi-daemon2 (2.10-2) unstable; urgency=low
 
   * Change parameter 'start all' to 'start' for init runing (rc*.d)

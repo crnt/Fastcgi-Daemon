@@ -11,11 +11,12 @@ namespace fastcgi
 
 RequestStream::RequestStream(Request *req) :
 	request_(req)
-{
-}
+{}
 
 RequestStream::~RequestStream() {
-	request_->write(stream_.rdbuf());
+    if (stream_.rdbuf()->in_avail()) {
+        request_->write(stream_.rdbuf());
+    }
 }
 
 } // namespace fastcgi
