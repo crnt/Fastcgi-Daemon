@@ -1,3 +1,9 @@
+fastcgi-daemon2 (2.10-4) unstable; urgency=low
+
+  * empty boundary allowed in multipart
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Wed, 10 Aug 2011 15:38:12 +0400
+
 fastcgi-daemon2 (2.10-3) unstable; urgency=low
 
   * RequestStream destructor fixed for empty stream

@@ -454,7 +454,9 @@ RequestImpl::attach(RequestIOStream *stream, char *env[]) {
 	const std::string &type = getContentType();
 	if (strncasecmp("multipart/form-data", type.c_str(), sizeof("multipart/form-data") - 1) == 0) {
 		std::string boundary = Parser::getBoundary(Range::fromString(type));
-		Parser::parseMultipart(this, body_, boundary);
+		if (!boundary.empty()) {
+		    Parser::parseMultipart(this, body_, boundary);
+		}
 	}
 	else if (strncasecmp("text/plain", type.c_str(), sizeof("text/plain") - 1) &&
 			strncasecmp("application/octet-stream", type.c_str(), sizeof("application/octet-stream") - 1))

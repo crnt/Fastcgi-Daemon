@@ -84,7 +84,7 @@ Parser::getBoundary(const Range &range) {
 		}
 		return std::string("--").append(boundary.begin(), boundary.end());
 	}
-	throw std::runtime_error("no boundary found");
+	return StringUtils::EMPTY_STRING;
 }
 
 void
