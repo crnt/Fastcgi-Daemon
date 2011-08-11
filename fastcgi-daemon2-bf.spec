@@ -82,7 +82,7 @@ Init scripts packet for fastcgi-daemon
 
 
 %build
-./autogen.sh
+ACLOCAL_OPTIONS="-I /usr/share/autoconf-archive/ -I ./config/" ./autogen.sh
 %configure --sysconfdir=/etc/fastcgi-daemon2 \
 	--localstatedir=/var/log/fastcgi-daemon2 \
 	--enable-cppunit
