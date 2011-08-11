@@ -147,7 +147,6 @@ rmdir $AVAILABLE_DIR $LOG_DIR $RUN_DIR $POSTSTART_DIR $POSTSTOP_DIR $CHECK_DIR  
 %files libs
 %defattr(-,root,root)
 %{_libdir}/libfastcgi-daemon2.so.*
-/usr/lib64/libfastcgi-filelogger.so.*
 %{_libdir}/fastcgi2/example.so.*
 
 
@@ -167,6 +166,9 @@ rmdir $AVAILABLE_DIR $LOG_DIR $RUN_DIR $POSTSTART_DIR $POSTSTOP_DIR $CHECK_DIR  
 %{_bindir}/fastcgistart2.sh
 %{_sysconfdir}/init.d/fastcgi-daemon2
 
+%files filelogger
+%defattr(-,root,root)
+%{_libdir}/fastcgi2/fastcgi2-filelogger.so.*
 
 %files syslog
 %defattr(-,root,root)
