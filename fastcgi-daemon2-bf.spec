@@ -14,6 +14,7 @@ BuildRequires:	pkgconfig
 BuildRequires:  libxml2-devel
 BuildRequires:  fcgi-devel
 BuildRequires:  cppunit-devel
+BuildRequires:  openssl-devel
 
 Requires:	%{name}-libs
 
@@ -82,7 +83,7 @@ Init scripts packet for fastcgi-daemon
 
 
 %build
-ACLOCAL_OPTIONS="-I /usr/share/autoconf-archive/ -I ./config/" ./autogen.sh
+ACLOCAL_OPTIONS="-I ./config/" ./autogen.sh
 %configure --sysconfdir=/etc/fastcgi-daemon2 \
 	--localstatedir=/var/log/fastcgi-daemon2 \
 	--enable-cppunit

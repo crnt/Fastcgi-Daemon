@@ -2,8 +2,6 @@ AUTOMAKE_OPTIONS = 1.9 foreign
 
 SUBDIRS = include library main example syslog request-cache statistics file-logger
 
-ACLOCAL_AMFLAGS = -I config -I /usr/share/autoconf-archive/
-
 if HAVE_CPPUNIT
 SUBDIRS += tests
 endif
