@@ -40,6 +40,13 @@ Requires:	%{name}-libs = %{version}-%{release}
 %description libs-devel
 Development environment for %{name}-libs
 
+%package        filelogger
+Summary:        File logger for %{name}
+Group:          System Environment/Libraries
+Requires:       %{name} = %{version}-%{release}
+
+%description    filelogger
+File logger for %{name}
 
 %package        syslog
 Summary:        Syslog for %{name}
