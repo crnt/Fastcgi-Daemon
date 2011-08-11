@@ -142,11 +142,12 @@ rmdir $AVAILABLE_DIR $LOG_DIR $RUN_DIR $POSTSTART_DIR $POSTSTOP_DIR $CHECK_DIR  
 %files
 %defattr(-,root,root)
 %{_sbindir}/fastcgi-daemon2
-%{_sysconfdir}/fastcgi2/fastcgi.conf.example
+/etc/fastcgi-daemon2/fastcgi.conf.example
 
 %files libs
 %defattr(-,root,root)
 %{_libdir}/libfastcgi-daemon2.so.*
+%{_libdir}/libfastcgi-filelogger.so.*
 %{_libdir}/fastcgi2/example.so.*
 
 
