@@ -100,9 +100,9 @@ rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 install -d %{buildroot}%{_bindir}
-install -m 755 extra/fastcgistart.sh %{buildroot}%{_bindir} 
+install -m 755 extra/fastcgistart2.sh %{buildroot}%{_bindir} 
 install -d %{buildroot}%{_sysconfdir}/init.d
-install -m 755 extra/fastcgi-daemon %{buildroot}%{_sysconfdir}/init.d
+install -m 755 extra/fastcgi-daemon2 %{buildroot}%{_sysconfdir}/init.d
 
 
 %clean
