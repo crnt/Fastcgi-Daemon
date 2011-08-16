@@ -1,3 +1,9 @@
+fastcgi-daemon2 (2.10-5) unstable; urgency=low
+
+  * sspec fixed
+
+ -- Ilya Golubtsov (Ilya) <golubtsov@yandex-team.ru>  Tue, 16 Aug 2011 12:33:10 +0400
+
 fastcgi-daemon2 (2.10-4) unstable; urgency=low
 
   * empty boundary allowed in multipart
